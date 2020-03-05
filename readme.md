@@ -14,6 +14,8 @@ rpi - ХЗ. <br>
 eth0 - интерфейс. <br>
 off - ХЗ. <br>
 
+## Raspbian.
+
 ### Root SSH
 ```
 echo PermitRootLogin yes >> /etc/ssh/sshd_config 
