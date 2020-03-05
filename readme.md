@@ -1,29 +1,29 @@
 ### репозиторий общего назначения Raspberry.
 
-####Root SSH
+#### Root SSH
 ```
 echo PermitRootLogin yes >> /etc/ssh/sshd_config 
 sudo passwd
-	pass
-	pass
+    pass
+    pass
 sudo systemctl enable ssh
 sudo systemctl start ssh
 ```
 
-###Подключаем LCD 3.5
+#### Подключаем LCD 3.5
 ```
-    raspi-config
+raspi-config
     должно быть написано pi жмём [Enter]
     выбираем [3 Boot Options] жмём [Enter]
     выбираем [B1 Desktop / CLI] жмём [Enter]
     выбираем [B2 Console Autologin] жмём [Enter]
     выбираем <Finish> (для перехода вниз нажмите [Tab]) жмём [Enter]
     выбираем <No> жмём [Enter]
-    wget https://github.com/goodtft/LCD-show/archive/master.zip
-    unzip master.zip 
-    echo top >> /home/pi/.bashrc
-    cd LCD-show-master
-    ./LCD35-show
+wget https://github.com/goodtft/LCD-show/archive/master.zip
+unzip master.zip 
+echo top >> /home/pi/.bashrc
+cd LCD-show-master
+./LCD35-show
 ```
 
 #### Fork + Git
