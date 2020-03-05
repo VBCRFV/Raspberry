@@ -16,6 +16,7 @@
 | Pi Zero W | 2017 | Broadcom BCM2835 | 1x1000 | VC_4 | 0.5 | 802.11n 4.0 | - | 1 | mini HDMI, GPIO PWM | mini HDMI, GPIO Composite | 40 |
 | Pi 4 B | 2019 | Broadcom BCM2711 | 4x1500 | VC_6 | 1,2,4 | 802.11ac 5.0 | 1000 | 2-2.0, 2-3.0 | I²S, 2 micro HDMI, 3.5 jack | 2 micro HDMI, TRRS, DSI | 40 |
 
+![](./img/ras-ora.png)
 ## GPIO
 ![](./img/raspinovka_GPIO_platah_Raspberry_Pi.jpg)
 
