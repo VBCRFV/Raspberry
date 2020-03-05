@@ -3,6 +3,7 @@
 ##
 
 | Модель | Год выпуска | CPU | core | GPU | RAM | WiFi BT | LAN | USB | Audio | Video | GPIO |
+| :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: |
 | Pi 1 A | 2013 | Broadcom BCM2835 | 1x700 | VC_4 | 0.25 | - | - | 1 | I²S, HDMI, 3.5 jack | HDMI, RCA | 26 |
 | Pi 1 A+ | 2014 | Broadcom BCM2835 | 1x700 | VC_4 | 0.25 | - | - | 1 | I²S, HDMI, 3.5 jack | HDMI, TRRS | 40 |
 | Pi 1 B | 2012 | Broadcom BCM2835 | 1x700 | VC_4 | 0.5 | - | 100 | 2 | I²S, HDMI, 3.5 jack | HDMI, RCA | 26 |
