@@ -1,0 +1,40 @@
+#Первичная настройка RPI:
+ip=10.10.10.252::10.10.10.254:255.255.255.0:rpi:eth0:off
+
+#Далее настройки на самой RPI:
+sudo -s
+echo rpivpn > /etc/hostname
+echo interface eth0 > /etc/dhcpcd.conf
+echo static ip_address=10.10.10.252/24 >> /etc/dhcpcd.conf
+echo static routers=10.10.10.254 >> /etc/dhcpcd.conf
+echo static domain_name_servers=10.10.10.253 >> /etc/dhcpcd.conf
+ifconfig eth0 down && ifconfig eth0 up
+apt-get install mc
+adduser sa
+
+echo "sa ALL=(ALL) NOPASSWD: ALL" > /etc/sudoers.d/010_pi-nopasswd
+
+##Релогин
+deluser pi
+
+##
+rm -r /home/pi
+cat /etc/passwd
+
+echo 127.0.0.1 localhost > /etc/hosts
+echo ::1 localhost ip6-localhost ip6-loopback >> /etc/hosts
+echo ff02::1 ip6-allnodes >> /etc/hosts
+echo ff02::2 ip6-allrouters >> /etc/hosts
+echo 127.0.1.1 rpivpn >> /etc/hosts
+
+curl -L https://install.pivpn.io | bash
+
+# Отключем передачу ovpn как шлюза по умолчания на клиентах.
+/etc/openvpn/server.conf
+	#push "redirect-gateway defl"
+
+# Прописываем разрешённые подсети, каждому клиенту.
+	push "route 10.0.0.0 255.255.255.0"
+
+#Перезапускаем сервер
+service openvpn restart

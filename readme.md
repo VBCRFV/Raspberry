@@ -1,5 +1,24 @@
 # Репозиторий общего назначения Raspberry.
 
+## Модели
+
+| Модель | Год выпуска | CPU | core | GPU | RAM | WiFi BT | LAN | USB | Audio | Video | GPIO |
+| :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: |
+| Pi 1 A | 2013 | Broadcom BCM2835 | 1x700 | VC_4 | 0.25 | - | - | 1 | I²S, HDMI, 3.5 jack | HDMI, RCA | 26 |
+| Pi 1 A+ | 2014 | Broadcom BCM2835 | 1x700 | VC_4 | 0.25 | - | - | 1 | I²S, HDMI, 3.5 jack | HDMI, TRRS | 40 |
+| Pi 1 B | 2012 | Broadcom BCM2835 | 1x700 | VC_4 | 0.5 | - | 100 | 2 | I²S, HDMI, 3.5 jack | HDMI, RCA | 26 |
+| Pi 1 B+ | 2014 | Broadcom BCM2835 | 1x700 | VC_4 | 0.5 | - | 100 | 4 | I²S, HDMI, 3.5 jack | HDMI, TRRS | 40 |
+| Pi 2 B | 2015 | Broadcom BCM2836 | 4x900 | VC_4 | 1 | - | 100 | 4 | I²S, HDMI, 3.5 jack | HDMI, TRRS | 40 |
+| Pi 3 A+ | 2018 | Broadcom BCM2837B0 | 4x1400 | VC_4 | 0.5 | 802.11ac 4.2 | - | 1 | I²S, HDMI, 3.5 jack | HDMI, TRRS, DSI | 40 |
+| Pi 3 B | 2016 | Broadcom BCM2837 | 4x1200 | VC_4 | 1 | 802.11n 4.1 | 100 | 4 | I²S, HDMI, 3.5 jack | HDMI, TRRS, DSI | 40 |
+| Pi 3 B+ | 2018 | Broadcom BCM2837B0 | 4x1400 | VC_4 | 1 | 802.11ac 4.2 | 1000 | 4 | I²S, HDMI, 3.5 jack | HDMI, TRRS, DSI | 40 |
+| Pi Zero | 2015 | Broadcom BCM2835 | 1x1000 | VC_4 | 0.5 | - | - | 1 | mini HDMI, GPIO PWM | mini HDMI, GPIO Composite | 40 |
+| Pi Zero W | 2017 | Broadcom BCM2835 | 1x1000 | VC_4 | 0.5 | 802.11n 4.0 | - | 1 | mini HDMI, GPIO PWM | mini HDMI, GPIO Composite | 40 |
+| Pi 4 B | 2019 | Broadcom BCM2711 | 4x1500 | VC_6 | 1,2,4 | 802.11ac 5.0 | 1000 | 2-2.0, 2-3.0 | I²S, 2 micro HDMI, 3.5 jack | 2 micro HDMI, TRRS, DSI | 40 |
+
+## GPIO
+![](./img/raspinovka_GPIO_platah_Raspberry_Pi.jpg)
+
 ## раздел Boot
 
 ### Статический ip при первом запуске.
