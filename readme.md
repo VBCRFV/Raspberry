@@ -1,14 +1,17 @@
 ### репозиторий общего назначения Raspberry.
 
 ####Root SSH
-    echo PermitRootLogin yes >> /etc/ssh/sshd_config 
-    sudo passwd
-    	pass
-    	pass
-    sudo systemctl enable ssh
-    sudo systemctl start ssh
+```
+echo PermitRootLogin yes >> /etc/ssh/sshd_config 
+sudo passwd
+	pass
+	pass
+sudo systemctl enable ssh
+sudo systemctl start ssh
+```
 
 ###Подключаем LCD 3.5
+```
     raspi-config
     должно быть написано pi жмём [Enter]
     выбираем [3 Boot Options] жмём [Enter]
@@ -21,7 +24,7 @@
     echo top >> /home/pi/.bashrc
     cd LCD-show-master
     ./LCD35-show
-
+```
 
 #### Fork + Git
     1. создаём локальную папку репозитория. (не забываем про General settings).
