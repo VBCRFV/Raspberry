@@ -22,7 +22,7 @@
 
 ## раздел Boot
 
-### Статический ip при первом запуске.
+### Альтернативная конфигурация (если нет DHCP).
 В файл cmdline.txt, в конец строки, через пробел добавляем строку.
 ```
 ip=10.0.0.1::10.0.0.254:255.255.255.0:rpi:eth0:off
@@ -33,6 +33,19 @@ ip=10.0.0.1::10.0.0.254:255.255.255.0:rpi:eth0:off
 rpi - ХЗ. <br>
 eth0 - интерфейс. <br>
 off - ХЗ. <br>
+
+### Включить wlan0.
+Создаём файл /boot/wpa_supplicant.conf
+```
+ctrl_interface=DIR=/var/run/wpa_supplicant GROUP=netdev
+update_config=1
+country=RU
+network={
+ssid="Wi_Fi"
+psk="pAsSwOrD"
+key_mgmt=WPA-PSK
+}
+```
 
 ## Raspbian.
 

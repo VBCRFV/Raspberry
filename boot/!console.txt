@@ -1,0 +1,27 @@
+# Первый запуск.
+sudo -s
+echo interface eth0 >> /etc/dhcpcd.conf
+echo static ip_address=10.10.11.33/24 >> /etc/dhcpcd.conf
+echo static routers=10.10.11.1 >> /etc/dhcpcd.conf
+echo static domain_name_servers=8.8.8.8 >> /etc/dhcpcd.conf
+ifconfig eth0 down && ifconfig eth0 up
+
+# Обновление.
+sudo apt-get update
+sudo apt-get dist-upgrade
+sudo apt-get upgrade
+sudo rpi-update
+
+# выкл.вкл wlan0.
+ifconfig wlan0 down && ifconfig wlan0 up
+ifdown wlan0 && ifup wlan0
+sudo iwlist wlan0 scan
+
+
+# Настройка Wi-Fi на отъебись.
+auto wlan0
+iface wlan0 inet dhcp
+wpa-scan-ssid 1
+wpa-ssid "2G"
+wpa-key-mgmt WPA-PSK
+wpa-psk "pass"
