@@ -22,6 +22,10 @@
 
 ## раздел Boot
 
+### Монтировать /boot из ОС.
+```
+sudo mount /dev/mmcblk0p1 /boot
+```
 ### Альтернативная конфигурация (если нет DHCP).
 В файл cmdline.txt, в конец строки, через пробел добавляем строку.
 ```
@@ -41,14 +45,54 @@ ctrl_interface=DIR=/var/run/wpa_supplicant GROUP=netdev
 update_config=1
 country=RU
 network={
-ssid="Wi_Fi"
-psk="pAsSwOrD"
-key_mgmt=WPA-PSK
+        ssid="Wi-Fi"
+        scan_ssid=1
+        psk="pass"
 }
 ```
 
 ## Raspbian.
 
+### Сети.
+
+#### Ethernet.
+/etc/dhcpcd.conf
+```
+interface eth0
+static ip_address=10.10.10.10/24
+static routers=10.10.10.254
+static domain_name_servers=8.8.8.8
+```
+#### Wi-Fi.
+```
+sudo rfkill list all
+sudo rfkill unblock wifi
+sudo iwlist wlan0 scan
+```
+#wpa_passphrase SSID_сети парольная_фраза > /etc/wpa_supplicant/example.conf <br>
+/etc/wpa_supplicant/wpa_supplicant.conf
+```
+ctrl_interface=DIR=/var/run/wpa_supplicant GROUP=netdev
+update_config=1
+country=RU
+network={
+        ssid="Wi-Fi"
+        scan_ssid=1
+        psk="pass"
+}
+```
+```
+wpa_cli -i wlan0 reconfigure
+reboot
+```
+
+### Обновление.
+```
+udo apt-get update
+sudo apt-get dist-upgrade
+sudo apt-get upgrade
+sudo rpi-update
+```
 ### Root SSH
 ```
 echo PermitRootLogin yes >> /etc/ssh/sshd_config 
