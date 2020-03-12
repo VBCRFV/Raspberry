@@ -56,12 +56,61 @@ network={
 ### Сети.
 
 #### Ethernet.
-/etc/dhcpcd.conf
+/etc/dhcpcd.conf<br>
+Выключить ipv6 (выключаем всем и включаем на интерфейсе int0). <br>
+```
+noipv6
+interface int0
+ipv6
+```
+Простая настройка. <br>
 ```
 interface eth0
 static ip_address=10.10.10.10/24
 static routers=10.10.10.254
 static domain_name_servers=8.8.8.8
+```
+Настройка на основе найденого маршрутизатора. <br>
+```
+interface eth0
+arping 192.168.0.254
+arping 10.0.0.254
+
+profile 192.168.0.254
+static ip_address=192.168.0.1/24
+static routers=192.168.0.254
+static domain_name_servers=192.168.0.252
+
+profile 10.0.0.254
+static ip_address=10.0.0.1/24
+static routers=10.0.0.254
+static domain_name_servers=10.0.0.252
+```
+На случай если нет не маршрутизатора не dhcp. <br>
+```
+interface eth0
+arping 192.168.1.1
+fallback mylan
+
+profile 192.168.1.1
+static ip_address=192.168.1.99/24
+static routers=192.168.1.1
+static domain_name_servers=192.168.1.1
+
+profile mylan
+static ip_address=192.168.0.99/24
+```
+Добавить псевдоним. <br>
+/etc/network/interfaces.d/eth00 <br>
+```
+auto eth0:0
+allow-hotplug eth0:0
+iface eth0:0 inet static
+       address 10.11.12.34
+       netmask 255.255.255.0
+       network 10.11.12.0
+       gateway 10.11.12.254
+       metric 20
 ```
 #### Wi-Fi.
 ```
