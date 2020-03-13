@@ -1,0 +1,71 @@
+# mount /boot
+sudo mount /dev/mmcblk0p1 /boot
+
+# Первый запуск.
+sudo -s
+echo interface eth0 >> /etc/dhcpcd.conf
+echo static ip_address=10.10.11.33/24 >> /etc/dhcpcd.conf
+echo static routers=10.10.11.1 >> /etc/dhcpcd.conf
+echo static domain_name_servers=8.8.8.8 >> /etc/dhcpcd.conf
+ifconfig eth0 down && ifconfig eth0 up
+
+# Обновление.
+sudo apt-get update
+sudo apt-get dist-upgrade
+sudo apt-get upgrade
+sudo rpi-update
+
+# включить интерфейс wlan0.
+sudo rfkill list all
+sudo rfkill unblock wifi
+sudo iwlist wlan0 scan
+
+# выкл.вкл wlan0.
+ifconfig wlan0 down && ifconfig wlan0 up
+ifdown wlan0 && ifup wlan0
+sudo iwlist wlan0 scan
+
+# Настройка Wi-Fi на отъебись.
+/etc/network/intrfaces
+auto wlan0
+iface wlan0 inet dhcp
+wpa-scan-ssid 1
+wpa-ssid "ssid"
+wpa-psk "pass"
+
+# Настройка сети.
+Основной файл настроки сети в ОС семейства Debian /etc/network/interface в raspbian использовать не рекомендуют.
+Основной файл настройки ОС raspbian /etc/dhcpcd.conf.
+	interface eth0
+	static ip_address=10.10.11.33/24
+	static routers=10.10.11.1
+	static domain_name_servers=8.8.8.8
+
+### Предпочтительные настройки.
+## Альтернативный IP адресс.
+/boot/cmdline.txt
+ ip=10.10.11.33::10.10.11.1:255.255.255.0:rpi:eth0:off
+## Включить SSH.
+/boot/ssh
+
+
+
+# Настройка wpa_supplicant 
+wpa_passphrase SSID_сети парольная_фраза > /etc/wpa_supplicant/example.conf
+wpa_passphrase 5G pass > /etc/wpa_supplicant/example.conf
+wpa_supplicant -B -i wlan0 -c /etc/wpa_supplicant/wpa_supplicant.conf
+
+
+###########################################################
+# верная настройка
+/etc/wpa_supplicant/example.conf
+ctrl_interface=DIR=/var/run/wpa_supplicant GROUP=netdev
+update_config=1
+country=RU
+network={
+        ssid="2G"
+        scan_ssid=1
+        psk="pass"
+}
+
+wpa_cli -i wlan0 reconfigure
