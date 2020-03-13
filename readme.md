@@ -20,13 +20,11 @@
 ## GPIO
 ![](./img/raspinovka_GPIO_platah_Raspberry_Pi.jpg)
 
-## раздел Boot
+## раздел /boot/
 
-### Монтировать /boot из ОС.
-```
-sudo mount /dev/mmcblk0p1 /boot
-```
-### Альтернативная конфигурация (если нет DHCP).
+### Включить SSH.
+Создаём файл /boot/ssh
+### Настрока ip eth0, если нет DHCP(отменяет dhcpcd.conf, из ОС после настройки dhcpcd.conf, строку стоит удалить.).
 В файл cmdline.txt, в конец строки, через пробел добавляем строку.
 ```
 ip=10.0.0.1::10.0.0.254:255.255.255.0:rpi:eth0:off
@@ -38,7 +36,7 @@ rpi - ХЗ. <br>
 eth0 - интерфейс. <br>
 off - ХЗ. <br>
 
-### Включить wlan0.
+### Включить Wi-Fi (рекомендуется настрока 2.4 Ghz).
 Создаём файл /boot/wpa_supplicant.conf
 ```
 ctrl_interface=DIR=/var/run/wpa_supplicant GROUP=netdev
@@ -46,17 +44,33 @@ update_config=1
 country=RU
 network={
         ssid="Wi-Fi"
+        psk="password"
         scan_ssid=1
-        psk="pass"
 }
 ```
+ssid="Wi-Fi" - Подключится к wi-fi сети с SSID "Wi-Fi".
+psk="password" - пароль для подключения "password".
+scan_ssid=1 - опрос скрытых сетей.
 
-## Raspbian.
+## Raspbian ОС.
+
+### Первый запуск.
+прописываем сеть.
+```
+sudo -s
+echo interface eth0 >> /etc/dhcpcd.conf
+echo static ip_address=10.0.0.1/24 >> /etc/dhcpcd.conf
+echo static routers=10.0.0.254 >> /etc/dhcpcd.conf
+echo static domain_name_servers=8.8.8.8 >> /etc/dhcpcd.conf
+ifconfig eth0 down && ifconfig eth0 up
+apt install mc -y
+```
+Удаляем информацию о сети из файла /boot/cmdline.txt (если она туда вносилась). <br>
 
 ### Сети.
 
 #### Ethernet.
-/etc/dhcpcd.conf<br>
+/etc/dhcpcd.conf <br>
 Выключить ipv6 (выключаем всем и включаем на интерфейсе int0). <br>
 ```
 noipv6
@@ -113,30 +127,69 @@ iface eth0:0 inet static
        metric 20
 ```
 #### Wi-Fi.
+проверка блокировок.
 ```
-sudo rfkill list all # проверка блокировок.
-sudo rfkill unblock wifi # разблокировка.
-wpa_cli scan && sleep 5 && wpa_cli scan_results # сканим ssid.
-sudo iwlist wlan0 scan | grep Freq # сканим частоты (ищем 5G).
-sudo raspi-config => [Localization Options] => [Change WiFi County] => (RU или US) # смена локализации.
+sudo rfkill list all 
 ```
-#wpa_passphrase SSID_сети парольная_фраза > /etc/wpa_supplicant/example.conf <br>
-/etc/wpa_supplicant/wpa_supplicant.conf
+если есть '*blocked: yes', снимаем.
+
+```
+sudo rfkill unblock wifi
+```
+сканим ssid
+```
+sudo iwlist wlan0 scan | grep ESSID
+```
+Если нет нужного SSID и он при этом не скрытый (скрытые отображаются как ""), <br>
+возможно нужный SSID работает в 5 Ghz диапазоне, смотрим частоты видимых сетей. <br>
+```
+sudo iwlist wlan0 scan | grep Frequency
+```
+Если нет 5 Ghz диапазона, меняем локализацию, на туже, что и у точки доступа. <br>
+```
+sudo raspi-config => [Localization Options] => [Change WiFi County] => (скорее всего RU или US) # смена локализации.
+или добовляем/редактируем строку country=RU(или US) в файле /etc/wpa_supplicant/wpa_supplicant.conf
+```
+Ждём секунд 10 и пробуем снова, если опять нету, меняем локаль на другую. <br>
+```
+sudo iwlist wlan0 scan | grep Frequency
+или
+sudo wpa_cli scan && sleep 5 && wpa_cli scan_results
+```
+Что бы не хранить пароль от wi-fi в открытом виде, сгенерируем хеш пароля и пример конфигурации заодно.
+``` 
+wpa_passphrase SSID_сети парольная_фраза > /etc/wpa_supplicant/example.conf
+```
+копируем пример конфигурации из /etc/wpa_supplicant/example.conf <br>
+в конец файла /etc/wpa_supplicant/wpa_supplicant.conf, <br>
+если SSID скрытый, добавляем scan_ssid=1. 
+должно получится примерно следующее.<br>
 ```
 ctrl_interface=DIR=/var/run/wpa_supplicant GROUP=netdev
 update_config=1
 country=RU
 network={
-        ssid="Wi-Fi"
+        ssid="SSID_сети"
+        #psk="парольная_фраза"
+        psk=7344ce9456b8fe58347c67eaaec505a6abfdc7b659ea2a66142b11badf17e48e
         scan_ssid=1
-        psk="pass"
 }
 ```
+Не забываем удалить строку #psk="парольная_фраза" из файлов <br>
+/etc/wpa_supplicant/wpa_supplicant.conf <br>
+и <br>
+/etc/wpa_supplicant/example.conf (example.conf можно весь удалить) <br>
 ```
 wpa_cli -i wlan0 reconfigure
+rm /var/run/wpa_supplicant/*
 wpa_supplicant -B -i wlan0 -c /etc/wpa_supplicant/wpa_supplicant.conf
+```
+если увидели строку 'Successfully initialized wpa_supplicant', перезагружаем.
+```
 reboot
 ```
+в тячении минуты после перезагрузки wlan0 должен получить ip по dhcp, <br>
+если нужно задать статический ip, редактируем /etc/dhcpcd.conf аналогично настроке Ethernet(eth0). <br>
 
 ### Обновление.
 ```
