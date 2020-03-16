@@ -48,9 +48,9 @@ network={
         scan_ssid=1
 }
 ```
-ssid="Wi-Fi" - Подключится к wi-fi сети с SSID "Wi-Fi".
-psk="password" - пароль для подключения "password".
-scan_ssid=1 - опрос скрытых сетей.
+ssid="Wi-Fi" - Подключится к wi-fi сети с SSID "Wi-Fi". <br>
+psk="password" - пароль для подключения "password". <br>
+scan_ssid=1 - опрос скрытых сетей. <br>
 
 ## Raspbian ОС.
 
@@ -70,7 +70,7 @@ apt install mc -y
 ### Сети.
 
 #### Ethernet.
-/etc/dhcpcd.conf <br>
+Редактируем файл /etc/dhcpcd.conf <br>
 Выключить ipv6 (выключаем всем и включаем на интерфейсе int0). <br>
 ```
 noipv6
@@ -147,8 +147,9 @@ sudo iwlist wlan0 scan | grep Frequency
 ```
 Если нет 5 Ghz диапазона, меняем локализацию, на туже, что и у точки доступа. <br>
 ```
-sudo raspi-config => [Localization Options] => [Change WiFi County] => (скорее всего RU или US) # смена локализации.
-или добовляем/редактируем строку country=RU(или US) в файле /etc/wpa_supplicant/wpa_supplicant.conf
+sudo raspi-config => [Localization Options] => [Change WiFi County] => (скорее всего RU или US)
+или 
+добовляем/редактируем строку country=RU(или US) в файле /etc/wpa_supplicant/wpa_supplicant.conf
 ```
 Ждём секунд 10 и пробуем снова, если опять нету, меняем локаль на другую. <br>
 ```
@@ -156,13 +157,13 @@ sudo iwlist wlan0 scan | grep Frequency
 или
 sudo wpa_cli scan && sleep 5 && wpa_cli scan_results
 ```
-Что бы не хранить пароль от wi-fi в открытом виде, сгенерируем хеш пароля и пример конфигурации заодно.
+Что бы не хранить пароль от wi-fi в открытом виде, сгенерируем хеш пароля (и пример конфигурации заодно).
 ``` 
 wpa_passphrase SSID_сети парольная_фраза > /etc/wpa_supplicant/example.conf
 ```
 копируем пример конфигурации из /etc/wpa_supplicant/example.conf <br>
 в конец файла /etc/wpa_supplicant/wpa_supplicant.conf, <br>
-если SSID скрытый, добавляем scan_ssid=1. 
+если SSID скрытый, добавляем scan_ssid=1. <br>
 должно получится примерно следующее.<br>
 ```
 ctrl_interface=DIR=/var/run/wpa_supplicant GROUP=netdev
