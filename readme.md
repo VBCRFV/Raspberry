@@ -55,15 +55,23 @@ scan_ssid=1 - опрос скрытых сетей. <br>
 ## Raspbian ОС.
 
 ### Первый запуск.
-прописываем сеть.
+Прописываем сеть + mc.
 ```
 sudo -s
 echo interface eth0 >> /etc/dhcpcd.conf
-echo static ip_address=10.0.0.1/24 >> /etc/dhcpcd.conf
-echo static routers=10.0.0.254 >> /etc/dhcpcd.conf
+echo static ip_address=10.10.10.10/24 >> /etc/dhcpcd.conf
+echo static routers=10.10.10.254 >> /etc/dhcpcd.conf
 echo static domain_name_servers=8.8.8.8 >> /etc/dhcpcd.conf
 ifconfig eth0 down && ifconfig eth0 up
 apt install mc -y
+
+```
+Обновление.
+```
+udo apt-get update
+sudo apt-get dist-upgrade
+sudo apt-get upgrade
+sudo rpi-update
 ```
 Удаляем информацию о сети из файла /boot/cmdline.txt (если она туда вносилась). <br>
 
@@ -192,13 +200,6 @@ reboot
 в тячении минуты после перезагрузки wlan0 должен получить ip по dhcp, <br>
 если нужно задать статический ip, редактируем /etc/dhcpcd.conf аналогично настроке Ethernet(eth0). <br>
 
-### Обновление.
-```
-udo apt-get update
-sudo apt-get dist-upgrade
-sudo apt-get upgrade
-sudo rpi-update
-```
 ### Root SSH
 ```
 echo PermitRootLogin yes >> /etc/ssh/sshd_config 
