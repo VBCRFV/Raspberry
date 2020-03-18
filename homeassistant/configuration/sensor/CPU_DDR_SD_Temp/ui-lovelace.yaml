@@ -1,0 +1,43 @@
+title: home assistant
+views:
+  - title: local host
+    icon: mdi:desktop-tower
+    cards:
+    - type: horizontal-stack
+      cards:
+      - type: gauge
+        name: Загрузка CPU
+        unit: "%"
+        entity: sensor.processor_use
+        severity:
+          green: 0
+          yellow: 60
+          red: 85
+      - type: gauge
+        name: Температура Chip
+        unit: "°C"
+        max: 120
+        entity: sensor.chip_temperatura
+        severity:
+          green: 0
+          yellow: 80
+          red: 100
+    - type: horizontal-stack
+      cards:
+      - type: gauge
+        name: Загрузка ОЗУ
+        unit: "%"
+        entity: sensor.memory_use_percent
+        severity:
+          green: 0
+          yellow: 60
+          red: 85
+      - type: gauge
+        name: Свободно на SD
+        unit: "Гб"
+        max: 64
+        entity: sensor.disk_free
+        severity:
+          green: 50
+          yellow: 12
+          red: 4

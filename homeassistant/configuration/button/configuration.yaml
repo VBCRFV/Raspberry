@@ -1,0 +1,21 @@
+#./configuration.yaml
+default_config:
+
+tts:
+  - platform: google_translate
+
+group: !include groups.yaml
+automation: !include automations.yaml
+script: !include scripts.yaml
+scene: !include scenes.yaml
+
+lovelace:
+    mode: yaml
+
+binary_sensor:
+  - platform: rpi_gpio
+    invert_logic: true
+    pull_mode: UP
+    bouncetime: 50
+    ports:
+      17: button

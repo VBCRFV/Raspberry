@@ -1,0 +1,12 @@
+#ui-lovelace.yaml
+title: home assistant
+views:
+  - title: Свет
+    icon: mdi:gceiling-light
+    cards:
+    - type: light
+      entity: light.light_21
+      name: light_21
+    - type: light
+      entity: light.light_rgb
+      name: light_rgb
