@@ -1,0 +1,8 @@
+#ui-lovelace.yaml
+title: home assistant
+views:
+  - title: Кнопка
+    icon: mdi:gesture-tap-button
+    cards:
+    - type: button
+      entity: binary_sensor.button

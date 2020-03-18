@@ -1,0 +1,26 @@
+default_config:
+
+tts:
+  - platform: google_translate
+
+group: !include groups.yaml
+automation: !include automations.yaml
+script: !include scripts.yaml
+scene: !include scenes.yaml
+
+lovelace:
+    mode: yaml
+
+sensor: 
+  - platform: systemmonitor
+    resources:
+    - type: processor_use
+    - type: memory_use_percent
+    - type: disk_free
+      arg: /
+
+  - platform: command_line
+    name: Chip температура.
+    command: "sudo /opt/vc/bin/vcgencmd measure_temp"
+    unit_of_measurement: "°C"
+    value_template: '{{ value | replace("temp=", "") | replace("''C", "") }}'
