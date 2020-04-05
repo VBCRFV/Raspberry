@@ -20,9 +20,11 @@
 ## GPIO
 ![](./img/raspinovka_GPIO_platah_Raspberry_Pi.jpg)
 
-## раздел Boot
+## раздел /boot/
 
-### Статический ip при первом запуске.
+### Включить SSH.
+Создаём файл /boot/ssh
+### Настрока ip eth0, если нет DHCP(отменяет dhcpcd.conf, из ОС после настройки dhcpcd.conf, строку стоит удалить.).
 В файл cmdline.txt, в конец строки, через пробел добавляем строку.
 ```
 ip=10.0.0.1::10.0.0.254:255.255.255.0:rpi:eth0:off
@@ -34,7 +36,171 @@ rpi - ХЗ. <br>
 eth0 - интерфейс. <br>
 off - ХЗ. <br>
 
-## Raspbian.
+### Включить Wi-Fi (рекомендуется настрока 2.4 Ghz).
+Создаём файл /boot/wpa_supplicant.conf
+```
+ctrl_interface=DIR=/var/run/wpa_supplicant GROUP=netdev
+update_config=1
+country=RU
+network={
+        ssid="Wi-Fi"
+        psk="password"
+        scan_ssid=1
+}
+```
+ssid="Wi-Fi" - Подключится к wi-fi сети с SSID "Wi-Fi". <br>
+psk="password" - пароль для подключения "password". <br>
+scan_ssid=1 - опрос скрытых сетей. <br>
+
+## Raspbian ОС.
+### Установка.
+Скачиваем образ Raspbian Buster Lite с сайта https://www.raspberrypi.org/downloads/raspbian/ <br>
+Всё тем же balenaEtcher заливаем образ на SD-card. <br>
+### Первый запуск.
+Прописываем сеть + mc.
+```
+sudo -s
+echo interface eth0 >> /etc/dhcpcd.conf
+echo static ip_address=10.10.10.10/24 >> /etc/dhcpcd.conf
+echo static routers=10.10.10.254 >> /etc/dhcpcd.conf
+echo static domain_name_servers=8.8.8.8 >> /etc/dhcpcd.conf
+ifconfig eth0 down && ifconfig eth0 up
+apt install mc -y
+
+```
+Обновление.
+```
+udo apt-get update
+sudo apt-get dist-upgrade
+sudo apt-get upgrade
+sudo rpi-update
+```
+Удаляем информацию о сети из файла /boot/cmdline.txt (если она туда вносилась). <br>
+
+### Сети.
+
+#### Ethernet.
+Редактируем файл /etc/dhcpcd.conf <br>
+Выключить ipv6 (выключаем всем и включаем на интерфейсе int0). <br>
+```
+noipv6
+interface int0
+ipv6
+```
+Простая настройка. <br>
+```
+interface eth0
+static ip_address=10.10.10.10/24
+static routers=10.10.10.254
+static domain_name_servers=8.8.8.8
+```
+Настройка на основе найденого маршрутизатора. <br>
+```
+interface eth0
+arping 192.168.0.254
+arping 10.0.0.254
+
+profile 192.168.0.254
+static ip_address=192.168.0.1/24
+static routers=192.168.0.254
+static domain_name_servers=192.168.0.252
+
+profile 10.0.0.254
+static ip_address=10.0.0.1/24
+static routers=10.0.0.254
+static domain_name_servers=10.0.0.252
+```
+На случай если нет не маршрутизатора не dhcp. <br>
+```
+interface eth0
+arping 192.168.1.1
+fallback mylan
+
+profile 192.168.1.1
+static ip_address=192.168.1.99/24
+static routers=192.168.1.1
+static domain_name_servers=192.168.1.1
+
+profile mylan
+static ip_address=192.168.0.99/24
+```
+Добавить псевдоним. <br>
+/etc/network/interfaces.d/eth00 <br>
+```
+auto eth0:0
+allow-hotplug eth0:0
+iface eth0:0 inet static
+       address 10.11.12.34
+       netmask 255.255.255.0
+       network 10.11.12.0
+       gateway 10.11.12.254
+       metric 20
+```
+#### Wi-Fi.
+проверка блокировок.
+```
+sudo rfkill list all 
+```
+если есть '*blocked: yes', снимаем.
+
+```
+sudo rfkill unblock wifi
+```
+сканим ssid
+```
+sudo iwlist wlan0 scan | grep ESSID
+```
+Если нет нужного SSID и он при этом не скрытый (скрытые отображаются как ""), <br>
+возможно нужный SSID работает в 5 Ghz диапазоне, смотрим частоты видимых сетей. <br>
+```
+sudo iwlist wlan0 scan | grep Frequency
+```
+Если нет 5 Ghz диапазона, меняем локализацию, на туже, что и у точки доступа. <br>
+```
+sudo raspi-config => [Localization Options] => [Change WiFi County] => (скорее всего RU или US)
+или 
+добовляем/редактируем строку country=RU(или US) в файле /etc/wpa_supplicant/wpa_supplicant.conf
+```
+Ждём секунд 10 и пробуем снова, если опять нету, меняем локаль на другую. <br>
+```
+sudo iwlist wlan0 scan | grep Frequency
+или
+sudo wpa_cli scan && sleep 5 && wpa_cli scan_results
+```
+Что бы не хранить пароль от wi-fi в открытом виде, сгенерируем хеш пароля (и пример конфигурации заодно).
+``` 
+wpa_passphrase SSID_сети парольная_фраза > /etc/wpa_supplicant/example.conf
+```
+копируем пример конфигурации из /etc/wpa_supplicant/example.conf <br>
+в конец файла /etc/wpa_supplicant/wpa_supplicant.conf, <br>
+если SSID скрытый, добавляем scan_ssid=1. <br>
+должно получится примерно следующее.<br>
+```
+ctrl_interface=DIR=/var/run/wpa_supplicant GROUP=netdev
+update_config=1
+country=RU
+network={
+        ssid="SSID_сети"
+        #psk="парольная_фраза"
+        psk=7344ce9456b8fe58347c67eaaec505a6abfdc7b659ea2a66142b11badf17e48e
+        scan_ssid=1
+}
+```
+Не забываем удалить строку #psk="парольная_фраза" из файлов <br>
+/etc/wpa_supplicant/wpa_supplicant.conf <br>
+и <br>
+/etc/wpa_supplicant/example.conf (example.conf можно весь удалить) <br>
+```
+wpa_cli -i wlan0 reconfigure
+rm /var/run/wpa_supplicant/*
+wpa_supplicant -B -i wlan0 -c /etc/wpa_supplicant/wpa_supplicant.conf
+```
+если увидели строку 'Successfully initialized wpa_supplicant', перезагружаем.
+```
+reboot
+```
+в тячении минуты после перезагрузки wlan0 должен получить ip по dhcp, <br>
+если нужно задать статический ip, редактируем /etc/dhcpcd.conf аналогично настроке Ethernet(eth0). <br>
 
 ### Root SSH
 ```
