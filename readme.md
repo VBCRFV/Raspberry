@@ -53,7 +53,9 @@ psk="password" - пароль для подключения "password". <br>
 scan_ssid=1 - опрос скрытых сетей. <br>
 
 ## Raspbian ОС.
-
+### Установка.
+Скачиваем образ Raspbian Buster Lite с сайта https://www.raspberrypi.org/downloads/raspbian/ <br>
+Всё тем же balenaEtcher заливаем образ на SD-card. <br>
 ### Первый запуск.
 Прописываем сеть + mc.
 ```
