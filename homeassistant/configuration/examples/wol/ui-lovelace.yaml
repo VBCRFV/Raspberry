@@ -1,0 +1,33 @@
+#ui-lovelace.yaml
+title: home assistant
+views:
+  - title: wol
+    icon: mdi:file-swap-outline
+    badges:
+     - entity: binary_sensor.7700k
+       tap_action:
+         action: call-service
+         service: switch.turn_on
+         service_data:
+            entity_id: switch.switch_wol
+       hold_action:
+         action: more-info
+    cards:
+      - type: glance
+        title: WOL
+        show_state: false
+        entities:
+          - entity: switch.switch_wol
+            tap_action:
+              action: call-service
+              service: switch.turn_on
+              service_data:
+                entity_id: switch.switch_wol
+            hold_action:
+              action: more-info
+      - type: entities
+        show_header_toggle: false
+        entities:
+        - entity: switch.switch_wol
+      - type: entity-button
+        entity: switch.switch_wol

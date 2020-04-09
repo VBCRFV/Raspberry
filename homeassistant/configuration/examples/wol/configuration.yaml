@@ -1,0 +1,29 @@
+#./configuration.yaml
+default_config:
+
+tts:
+  - platform: google_translate
+
+group: !include groups.yaml
+automation: !include automations.yaml
+script: !include scripts.yaml
+scene: !include scenes.yaml
+
+lovelace:
+    mode: yaml
+
+binary_sensor:
+  - platform: ping
+    host: 192.168.0.1
+    name: 7700k
+    count: 2
+    scan_interval: 60
+
+switch:
+  platform: command_line
+    switch_wol:
+      command_on: 'python3 /srv/homeassistant/scripts/switch_wol.py on 192.168.0.1 MA-C0-AD-DR-ES-S0'
+      command_off: ''
+      command_state: 'python3 /srv/homeassistant/scripts/switch_wol.py state 192.168.0.1 MA-C0-AD-DR-ES-S0'
+      value_template: '{{ value == "1" }}'
+      friendly_name: WOL 7700k
